@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "960809895702",
+    "project_id": "pawty-db5ff",
+    "storage_bucket": "pawty-db5ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960809895702:android:0e4ec8cdd0243796f1f237",
+        "android_client_info": {
+          "package_name": "com.example.pawty"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeehMV_sVO9enPQtrAKQkfee-owXWk7RQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
