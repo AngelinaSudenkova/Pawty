@@ -1,0 +1,93 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="360dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_centerInParent="true"
+        android:background="@android:color/transparent">
+        >
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImage"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:src="@mipmap/icon"
+                android:layout_centerHorizontal="true"
+                />
+
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_below="@id/profileImage"
+                android:layout_centerInParent="true"
+                android:paddingTop="16dp"
+                android:text="Username"
+                android:textColor="@color/darkBlue"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@+id/username"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/buttonAdd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add to friends"
+                android:backgroundTint="@color/purple"
+                app:cornerRadius="20dp"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/buttonSent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="The request has been sent"
+                android:visibility="gone"
+                android:backgroundTint="@color/green"
+                app:cornerRadius="20dp"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel the request"
+                android:backgroundTint="#454545"
+                app:cornerRadius="20dp"
+                android:visibility="gone"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

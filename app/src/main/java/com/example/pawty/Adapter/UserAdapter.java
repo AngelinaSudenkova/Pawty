@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.pawty.FriendRequestActivity;
 import com.example.pawty.MessageActivity;
 import com.example.pawty.Model.Chat;
 import com.example.pawty.Model.User;
@@ -78,9 +79,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, MessageActivity.class);
-                intent.putExtra("userid", user.getId());
-                mContext.startActivity(intent);
+                if (isChat) {
+                    Intent intent = new Intent(mContext, MessageActivity.class);
+                    intent.putExtra("userid", user.getId());
+                    mContext.startActivity(intent);
+                } else {
+                    Intent intent = new Intent(mContext, FriendRequestActivity.class);
+                    intent.putExtra("userid", user.getId());
+                    mContext.startActivity(intent);
+                }
             }
         });
     }
