@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
     <androidx.cardview.widget.CardView
@@ -14,12 +14,11 @@
         app:cardElevation="4dp"
         android:layout_centerInParent="true"
         android:background="@android:color/transparent">
-        >
 
-    <RelativeLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            >
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileImage"
@@ -44,7 +43,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_below="@+id/username"
             android:layout_marginTop="16dp"
@@ -75,7 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="The request has been sent"
-                android:visibility="gone"
+                android:visibility="invisible"
                 android:backgroundTint="@color/green"
                 app:cornerRadius="20dp"
                 android:textColor="@android:color/white"
@@ -86,11 +85,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancel the request"
+                android:textSize="12dp"
+                android:visibility="invisible"
                 android:backgroundTint="#454545"
                 app:cornerRadius="20dp"
-                android:visibility="gone"
+
                 android:textColor="@android:color/white"
-                android:layout_marginTop="8dp" />
+                android:layout_marginBottom="8dp" />
 
         </LinearLayout>
 
