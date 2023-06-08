@@ -51,6 +51,17 @@
             android:gravity="center_horizontal">
 
             <Button
+                android:id="@+id/buttonSendMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send a message"
+                android:textColor="@color/purple"
+                android:elevation="12dp"
+                android:backgroundTint="@color/white"
+                app:cornerRadius="20dp"
+                />
+
+            <Button
                 android:id="@+id/buttonAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

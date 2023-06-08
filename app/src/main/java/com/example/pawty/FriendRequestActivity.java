@@ -23,7 +23,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class FriendRequestActivity extends AppCompatActivity {
 
     TextView username;
-    Button buttonAdd, buttonSent, buttonCancel;
+    Button buttonAdd, buttonSent, buttonCancel, sendMessageButton;
     CircleImageView profileImage;
     DatabaseReference reference;
 
@@ -40,6 +40,7 @@ public class FriendRequestActivity extends AppCompatActivity {
         buttonCancel = findViewById(R.id.buttonCancel);
         buttonSent = findViewById(R.id.buttonSent);
         profileImage = findViewById(R.id.profileImage);
+        sendMessageButton = findViewById(R.id.buttonSendMessage);
 
         Intent intent = getIntent();
         friendId = intent.getStringExtra("userid");
@@ -71,6 +72,13 @@ public class FriendRequestActivity extends AppCompatActivity {
         });
 
 
+        sendMessageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToMessageActivity();
+            }
+        });
+
 
     }
 
@@ -83,14 +91,19 @@ public class FriendRequestActivity extends AppCompatActivity {
         if (friend != null && !friend.getImageURL().equals("default")) {
             args.putString("imageUrl", friend.getImageURL());
         } else {
-            args.putInt("imageRes", R.mipmap.icon); // Replace with your default image resource
+            args.putInt("imageRes", R.mipmap.icon);
         }
         fragment.setArguments(args);
 
-        // Replace the fragment container with the FullScreenImageFragment
         getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, fragment) // Use android.R.id.content to replace the whole activity's layout
+                .replace(android.R.id.content, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void goToMessageActivity(){
+        Intent intent = new Intent(FriendRequestActivity.this, MessageActivity.class);
+        intent.putExtra("userid", friend.getId());
+        startActivity(intent);
     }
 }
