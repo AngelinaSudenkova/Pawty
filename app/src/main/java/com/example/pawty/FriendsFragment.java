@@ -74,33 +74,73 @@ public class FriendsFragment extends Fragment {
     private void readUsers() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance("https://pawty-db5ff-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
-
-        reference.addValueEventListener(new ValueEventListener() {
+        DatabaseReference friendsRef = FirebaseDatabase.getInstance("https://pawty-db5ff-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Friends").child(firebaseUser.getUid());
+        friendsRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (searchUsers.getText().toString().equals("")) {
                     mUsers.clear();
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        User user = snapshot.getValue(User.class);
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        String friendId = dataSnapshot.getKey().toString();
+                        DatabaseReference friendRef = reference.child(friendId);
+                        friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    User user = snapshot.getValue(User.class);
+                                    assert user != null;
+                                    assert firebaseUser != null;
+                                    if (!user.getId().equals(firebaseUser.getUid())) {
+                                        mUsers.add(user);
+                                    }
+                                }
+                                userAdapter = new UserAdapter(getContext(), mUsers, false);
+                                recyclerView.setAdapter(userAdapter);
+                            }
 
-                        assert user != null;
-                        assert firebaseUser != null;
-                        if (!user.getId().equals(firebaseUser.getUid())) {
-                            mUsers.add(user);
-                        }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
 
                     }
-                    userAdapter = new UserAdapter(getContext(), mUsers, false);
-                    recyclerView.setAdapter(userAdapter);
-
                 }
+                userAdapter = new UserAdapter(getContext(), mUsers, false);
+                recyclerView.setAdapter(userAdapter);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-    }
+//        reference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if (searchUsers.getText().toString().equals("")) {
+//                    mUsers.clear();
+//                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                        User user = snapshot.getValue(User.class);
+//
+//                        assert user != null;
+//                        assert firebaseUser != null;
+//                        if (!user.getId().equals(firebaseUser.getUid())) {
+//                            mUsers.add(user);
+//                        }
+//
+//                    }
+//                    userAdapter = new UserAdapter(getContext(), mUsers, false);
+//                    recyclerView.setAdapter(userAdapter);
+//
+//                }
+//            }
+//        @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+   }
 
 
     private void searchUsers(String string){
