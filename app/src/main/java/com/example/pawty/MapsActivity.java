@@ -1,5 +1,7 @@
 package com.example.pawty;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -7,10 +9,13 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationRequest;
 import android.media.audiofx.Equalizer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +25,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,7 +48,7 @@ import android.widget.Toast;
 import android.provider.Settings;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
@@ -58,8 +65,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(binding.getRoot());
 
         checkMyPermission();
-        if (isPermissionGranted ) {
-            if(isGPSenabled()) {
+        if (isPermissionGranted) {
+            if (isGPSenabled()) {
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 mapFragment.getMapAsync(this);
@@ -70,13 +77,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMyLocationEnabled(true);
 
-    private boolean isGPSenabled(){
-        LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    goToLocation(latitude,longitude);
+                   // addImageToPostsCardView(ProfileFragment.this, bitmap, postList, postAdapter, user, latLng);
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                }
+            }, null);
+        } else {
+            Toast.makeText(this, "Turn on GPS permission for this app", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
+
+    private boolean isGPSenabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean providerEnable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if(providerEnable){
+        if (providerEnable) {
             return true;
-        }else{
+        } else {
             AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle("Set permission")
                     .setMessage("GPS is required for this app to work. Please enable GPS.")
                     .setPositiveButton("Yes, I'll do it now!", ((dialogInterface, i) -> {
@@ -86,23 +137,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .show();
             return false;
         }
-    }
-
-    @SuppressLint("MissingPermission")
-    private void getCurrentLocation() {
-        mLocationClient.getLastLocation().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Location location = task.getResult();
-                if (location != null) {
-                    goToLocation(location.getLatitude(), location.getLongitude());
-                } else {
-                    Toast.makeText(this, "Please check your settings", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "Please check your settings", Toast.LENGTH_SHORT).show();
-
-            }
-        });
     }
 
 
@@ -141,14 +175,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    @SuppressLint("MissingPermission")
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
-
-    }
-
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
@@ -168,15 +194,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == GPS_REQUEST_CODE){
+        if (requestCode == GPS_REQUEST_CODE) {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
             boolean providerEnable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            if(providerEnable){
+            if (providerEnable) {
                 Toast.makeText(this, "GPS is available", Toast.LENGTH_SHORT).show();
-            }else{
+            } else {
                 Toast.makeText(this, "GPS is not available", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+
     }
 }
