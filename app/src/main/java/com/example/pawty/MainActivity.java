@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.pawty.Model.User;
 import com.example.pawty.databinding.ActivityMainBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     DatabaseReference reference;
     ActivityMainBinding binding;
+    FloatingActionButton bottomButton;
 
 
 
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             setContentView(binding.getRoot());
             changeFragment(new HomeFragment());
             binding.bottomNavigation.setBackground(null);
+            bottomButton = findViewById(R.id.bottomButton);
 
 
            ViewPager viewPager = findViewById(R.id.viewPager);
@@ -74,8 +77,15 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
+            bottomButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                    intent.putExtra("userid", user.getUid());
+                    startActivity(intent);
 
-
+                }
+            });
 
            binding.bottomNavigation.setOnNavigationItemSelectedListener(item -> {
                switch(item.getItemId()){
