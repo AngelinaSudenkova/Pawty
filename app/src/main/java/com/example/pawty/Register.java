@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pawty.Model.Coordinates;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -116,12 +117,13 @@ public class Register extends AppCompatActivity {
                                     String userId = user.getUid();
                                     dbReference = FirebaseDatabase.getInstance("https://pawty-db5ff-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users").child(userId);
 
-                                    HashMap<String, String> hashMap = new HashMap<>();
+                                    HashMap<String, Object> hashMap = new HashMap<>();
                                     hashMap.put("id", userId);
                                     hashMap.put("username", usernameTxt);
                                     hashMap.put("imageURL","default");
                                     hashMap.put("status", "offline");
                                     hashMap.put("search", usernameTxt.toLowerCase());
+                                    hashMap.put("coordinates", new Coordinates(0,0));
 
                                     dbReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override

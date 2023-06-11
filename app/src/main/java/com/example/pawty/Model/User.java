@@ -8,15 +8,18 @@ public class User {
     private String status;
     private String search;
 
+    private Coordinates coordinates;
+
 
     public User(){}
 
-    public User(String id, String username, String imageURL, String status, String search) {
+    public User(String id, String username, String imageURL, String status, String search, Coordinates coordinates) {
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
         this.status = status;
         this.search = search;
+        this.coordinates = coordinates;
 
     }
 
@@ -58,5 +61,13 @@ public class User {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
     }
 }
