@@ -186,21 +186,3 @@ public class MainActivity extends AppCompatActivity {
         status("offline");
     }
 }
-/*
-               switch(item.getItemId()){
-                       case R.id.home:
-                       viewPager.setCurrentItem(0);
-                       break;
-                       case R.id.settings:
-                       viewPager.setCurrentItem(0);
-                       break;
-
-                       case R.id.chats:
-                       viewPager.setCurrentItem(0);
-                       break;
-
-                       case R.id.friend:
-                       changeFragment(new FierndsFragment());
-                       break;
-
-                       } */

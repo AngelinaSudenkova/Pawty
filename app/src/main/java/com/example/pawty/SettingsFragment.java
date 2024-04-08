@@ -82,7 +82,7 @@ public class SettingsFragment extends Fragment {
                 User user = snapshot.getValue(User.class);
                 username.setText(user.getUsername());
                 if (user.getImageURL().equals("default")) {
-                    profileImage.setImageResource(R.mipmap.ic_launcher);
+                    profileImage.setImageResource(R.mipmap.icon);
                 } else {
                     if (isAdded()) {
                         Glide.with(requireContext())

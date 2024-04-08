@@ -68,7 +68,7 @@ public class FriendRequestActivity extends AppCompatActivity {
                 friend = snapshot.getValue(User.class);
                 username.setText(friend.getUsername());
                 if(friend.getImageURL().equals("default")){
-                    profileImage.setImageResource(R.mipmap.ic_launcher);
+                    profileImage.setImageResource(R.mipmap.icon);
                 }else{
                     Glide.with(getApplicationContext()).load(friend.getImageURL()).into(profileImage);
                 }

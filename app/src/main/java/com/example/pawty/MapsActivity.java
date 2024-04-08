@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -105,7 +106,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         friendMarkers = new HashMap<>();
 
 
-
         checkMyPermission();
         if (isPermissionGranted) {
             if (isGPSenabled()) {
@@ -114,7 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mapFragment.getMapAsync(this);
                 mLocationClient = LocationServices.getFusedLocationProviderClient(this);
                 getCurrentLocation();
-                if(myCoordinates !=null) {
+                if (myCoordinates != null) {
                     LatLng latLng = new LatLng(myCoordinates.getLatitude(), myCoordinates.getLongitude());
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 18);
                     mMap.moveCamera(cameraUpdate);
@@ -132,6 +132,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
+        setFriendsMarkers();
 
 
     }
@@ -144,7 +145,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return;
             }
 
-           // locationManager.requestLocationUpdates();
+            // locationManager.requestLocationUpdates();
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
@@ -154,7 +155,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     myCoordinates = new Coordinates(latitude, longitude);
                     Log.e("Coo", myCoordinates.toString());
                     updateUserCoordinates(myCoordinates);
-                    setFriendsMarkers();
+              //      setFriendsMarkers();
                 }
 
                 @Override
@@ -253,13 +254,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void updateUserCoordinates(Coordinates coordinates){
+    private void updateUserCoordinates(Coordinates coordinates) {
         reference = FirebaseDatabase.getInstance("https://pawty-db5ff-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users").child(userId);
         reference.child("coordinates").setValue(coordinates);
 
     }
 
-    private void setFriendsMarkers(){
+    private void setFriendsMarkers() {
         DatabaseReference friendsRef = FirebaseDatabase.getInstance("https://pawty-db5ff-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Friends").child(userId);
 
         friendsRef.addValueEventListener(new ValueEventListener() {
@@ -280,68 +281,73 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 LatLng location = new LatLng(friendCoordinates.getLatitude(), friendCoordinates.getLongitude());
 
                                 if (friendMarkers.containsKey(friendId)) {
-                                    Marker marker = friendMarkers.get(friendId);
-                                    marker.setPosition(location);
+                                    Marker userMarker = friendMarkers.get(friendId);
+                                    RequestOptions requestOptions = new RequestOptions()
+                                            .circleCrop();
+                                    if (friend.getImageURL().equals("default")) {
+//                                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+//                                        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 150, 150, false);
+//                                        Bitmap circularUserPhoto = createCircularBitmap(resizedBitmap);
+//                                        userMarker.setIcon(BitmapDescriptorFactory.fromBitmap(circularUserPhoto));
+                                        userMarker.setPosition(location);
+                                    } else {
+//                                        Glide.with(getApplicationContext())
+//                                                .asBitmap()
+//                                                .load(imageUrl)
+//                                                .apply(requestOptions)
+//                                                .into(new CustomTarget<Bitmap>() {
+//                                                    @Override
+//                                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+//                                                        Bitmap resizedBitmap = Bitmap.createScaledBitmap(resource, 150, 150, false);
+//                                                        Bitmap circularUserPhoto = createCircularBitmap(resizedBitmap);
+//                                                        userMarker.setIcon(BitmapDescriptorFactory.fromBitmap(circularUserPhoto));
+                                                        userMarker.setPosition(location);
+                                                    }
+
+//                                                    @Override
+//                                                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+//                                                    }
+//                                                });
+//                                    }
                                 } else {
-//                                    // Create a new marker
-//                                    Picasso.get().load(imageUrl).into(new Target() {
-//                                        @Override
-//                                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-//                                            Bitmap resizeIcon = Bitmap.createScaledBitmap(bitmap, 150, 150, true);
-//                                            BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(resizeIcon);
-//
-//                                            Marker marker = mMap.addMarker(new MarkerOptions()
-//                                                    .position(location)
-//                                                    .icon(icon)
-//                                                    .anchor(0.5f, 1.0f));
-//
-//                                            friendMarkers.put(friendId, marker);
-//                                        }
-//
-//                                        @Override
-//                                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-//                                            Marker marker = mMap.addMarker(new MarkerOptions()
-//                                                    .position(location));
-//
-//                                            friendMarkers.put(friendId, marker);
-//                                        }
-//
-//
-//                                        @Override
-//                                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-//
-//                                        }
-//                                    });
 
                                     RequestOptions requestOptions = new RequestOptions()
                                             .circleCrop(); // Apply circular cropping
 
                                     Marker userMarker = mMap.addMarker(new MarkerOptions()
-                                                    .position(location)
-                                                    .anchor(0.5f, 1.0f));
+                                            .position(location)
+                                            .anchor(0.5f, 1.0f));
+                                    if (friend.getImageURL().equals("default")) {
+                                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.icon);
+                                        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 150, 150, false);
+                                        Bitmap circularUserPhoto = createCircularBitmap(resizedBitmap);
+                                        userMarker.setIcon(BitmapDescriptorFactory.fromBitmap(circularUserPhoto));
+                                        friendMarkers.put(friendId, userMarker);
+                                    } else {
+                                        Glide.with(getApplicationContext())
+                                                .asBitmap()
+                                                .load(imageUrl)
+                                                .apply(requestOptions)
+                                                .into(new CustomTarget<Bitmap>() {
+                                                    @Override
+                                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                                        Bitmap resizedBitmap = Bitmap.createScaledBitmap(resource, 150, 150, false);
+                                                        Bitmap circularUserPhoto = createCircularBitmap(resizedBitmap);
+                                                        userMarker.setIcon(BitmapDescriptorFactory.fromBitmap(circularUserPhoto));
+                                                        friendMarkers.put(friendId, userMarker);
+                                                    }
 
-                                            friendMarkers.put(friendId, userMarker);
+                                                    @Override
+                                                    public void onLoadCleared(@Nullable Drawable placeholder) {
 
-                                    Glide.with(MapsActivity.this)
-                                            .asBitmap()
-                                            .load(imageUrl)
-                                            .apply(requestOptions)
-                                            .into(new CustomTarget<Bitmap>() {
-                                                @Override
-                                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(resource, 150, 150, false);
-                                                    Bitmap circularUserPhoto = createCircularBitmap(resizedBitmap);
-                                                    userMarker.setIcon(BitmapDescriptorFactory.fromBitmap(circularUserPhoto));
-                                                }
-
-                                                @Override
-                                                public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                                                }
-                                            });
+                                                    }
+                                                });
+                                    }
 
                                 }
                             }
+
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -351,6 +357,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

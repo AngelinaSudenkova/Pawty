@@ -69,7 +69,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String emailTxt;
-                emailTxt = username.getText().toString();
+                emailTxt = username.getText().toString().trim();
                 String passwordTxt;
                 passwordTxt = password.getText().toString();
 
